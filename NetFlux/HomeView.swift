@@ -8,48 +8,71 @@
 import SwiftUI
 
 struct HomeView: View {
+    
     var heroTestTitle = Constants.testTitleURL
+    
+    @State private var viewModel = ViewModel()
+    
     var body: some View {
         GeometryReader { geo in
             ScrollView {
-                LazyVStack{
-                    //so the image of the title is fetched from an url thats why were gona user async to load on a different thread so it should not block the main thread
-                    AsyncImage(url: URL(string: heroTestTitle)){image in
+                
+                switch viewModel.homeStatus {
+                    
+                case .notStarted:
+                    EmptyView()
+                    
+                case .fetching:
+                    ProgressView()
+                    
+                case .sucess:
+                    LazyVStack {
                         
-                        image
-                            .resizable()
-                            .scaledToFit()
-                            .overlay{
-                                LinearGradient(
-                                    stops: [Gradient.Stop(color: .clear, location: 0.75),
-                                    Gradient.Stop(color: .gradient, location: 1)],
-                                startPoint: .top,
-                                    endPoint: .bottom)
+                        AsyncImage(url: URL(string: heroTestTitle)) { image in
+                            image
+                                .resizable()
+                                .scaledToFit()
+                                .overlay {
+                                    LinearGradient(
+                                        stops: [
+                                            .init(color: .clear, location: 0.75),
+                                            .init(color: .gradient, location: 1)
+                                        ],
+                                        startPoint: .top,
+                                        endPoint: .bottom
+                                    )
+                                }
+                        } placeholder: {
+                            ProgressView()
+                        }
+                        .frame(width: geo.size.width,
+                               height: geo.size.height * 0.86)
+                        
+                        HStack {
+                            Button {} label: {
+                                Text(Constants.playString)
+                                    .ghostButton()
                             }
-                        //addind a place holder as a progress view so if the image loads it shows the Progress view while loading the image form the backend/internet
-                    }placeholder: {
-                        ProgressView()
-                    }
-                    .frame(width: geo.size.width, height: geo.size.height * 0.86)
-                    
-                    HStack{
-                        Button{
                             
-                        }label: {
-                            Text(Constants.playString)
-                                .ghostButton()
+                            Button {} label: {
+                                Text(Constants.downloadString)
+                                    .ghostButton()
+                            }
                         }
-                        Button{
-                            
-                        }label: {
-                            Text(Constants.downloadString)
-                                .ghostButton()
-                        }
+                        
+                        HorizontalListView(
+                            header: Constants.topRatedMoviesString,
+                            titles: viewModel.trendingMovies
+                        )
                     }
                     
-                    HorizontalListView(header: Constants.topRatedMoviesString)
-                    HorizontalListView(header: Constants.topRatedTVString)
-                    HorizontalListView(header: Constants.trendingTVString)
+                case .failed(let error):
+                    Text("Error: \(error.localizedDescription)")
+                }
+            }
+            .task {
+                if case .notStarted = viewModel.homeStatus {
+                    await viewModel.getTitles()
                 }
             }
         }
