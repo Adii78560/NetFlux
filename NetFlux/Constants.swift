@@ -28,7 +28,15 @@ struct Constants{
     static let testTitleURL2 = "https://images.unsplash.com/photo-1641549058491-8a3442385da0?q=80&w=1287&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
     static let testTitleURL3 = "https://images.unsplash.com/photo-1635805737707-575885ab0820?q=80&w=1287&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
     
+    static let posterURLStart = "https://image.tmdb.org/t/p/w500"
     
+    static func addPosterPath(to titles: inout[Title]){
+        for index in titles.indices{
+            if let path = titles[index].psoterPath{
+                titles[index].psoterPath = Constants.posterURLStart + path
+            }
+        }
+    }
 }
 
 //created an extention of a button so we can use this particular function to reduce the redencency of the code
