@@ -25,6 +25,7 @@ class ViewModel{
         do{
             trendingMovies = try await dataFetcher.fetchTitles(for: "movie")
             homeStatus = .sucess
+            print("trending movies data fetched Sucessfully")
         }catch{
             print(error)
             homeStatus = .failed(underlyingError: error)

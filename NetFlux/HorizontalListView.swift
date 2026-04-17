@@ -19,7 +19,7 @@ struct HorizontalListView: View {
             ScrollView(.horizontal, showsIndicators: false) {
                 LazyHStack{
                     ForEach(titles){title in
-                        AsyncImage(url: URL(string: title.psoterPath ?? " ")){image in
+                        AsyncImage(url: URL(string: title.posterPath ?? "")){image in
                             image
                                 .resizable()
                                 .scaledToFit()
