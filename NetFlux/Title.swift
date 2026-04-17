@@ -16,12 +16,12 @@ struct Title: Decodable, Identifiable{
     var title: String?
     var name: String?
     var overview: String?
-    var psoterPath: String?
+    var posterPath: String?
     
     static var previewTitles = [
-        Title(id: 1, title: "BeetleJuice", name: "BeetleJuice", overview: "A Movie about BeetleJuice", psoterPath: Constants.testTitleURL),
-        Title(id: 2, title: "Pulp Fiction", name: "Pulp Fiction", overview: "A Movie About Pulp Fiction", psoterPath: Constants.testTitleURL2),
-        Title(id: 3, title: "The Dark Knight", name: "The Dark Knight", overview: "A Moview About BatMan", psoterPath: Constants.testTitleURL3)
+        Title(id: 1, title: "BeetleJuice", name: "BeetleJuice", overview: "A Movie about BeetleJuice", posterPath: Constants.testTitleURL),
+        Title(id: 2, title: "Pulp Fiction", name: "Pulp Fiction", overview: "A Movie About Pulp Fiction", posterPath: Constants.testTitleURL2),
+        Title(id: 3, title: "The Dark Knight", name: "The Dark Knight", overview: "A Moview About BatMan", posterPath: Constants.testTitleURL3)
     ]
     
 }

@@ -32,8 +32,9 @@ struct Constants{
     
     static func addPosterPath(to titles: inout[Title]){
         for index in titles.indices{
-            if let path = titles[index].psoterPath{
-                titles[index].psoterPath = Constants.posterURLStart + path
+            if let path = titles[index].posterPath{
+                titles[index].posterPath = Constants.posterURLStart+path
+//                print("RAW PATH:", "[\(path)]")
             }
         }
     }

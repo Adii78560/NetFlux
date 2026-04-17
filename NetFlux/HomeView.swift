@@ -61,7 +61,7 @@ struct HomeView: View {
                         }
                         
                         HorizontalListView(
-                            header: Constants.topRatedMoviesString,
+                            header: Constants.trendingMoviesString,
                             titles: viewModel.trendingMovies
                         )
                     }
@@ -73,6 +73,12 @@ struct HomeView: View {
             .task {
                 if case .notStarted = viewModel.homeStatus {
                     await viewModel.getTitles()
+                    if let config = APIConfig.shared{
+                        print("API KEY RAW:", config.tmdbAPIKey.debugDescription)
+                        print("BASE URL RAW:", config.tmdbBaseURL.debugDescription)
+                        print("BASE URL LENGTH:", config.tmdbBaseURL.count)
+                        print("Hero URL RAW:", "[\(heroTestTitle)]")
+                    }
                 }
             }
         }

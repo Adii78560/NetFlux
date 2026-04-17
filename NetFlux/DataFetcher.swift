@@ -6,47 +6,44 @@
 //
 
 import Foundation
-struct DataFetcher {
-
-    func fetchTitles(for media: String) async throws -> [Title] {
-        
-        guard let config = APIConfig.shared else {
-            throw NetworkError.missingConfig
-        }
-        
-        let baseURL = config.tmdbBaseURL
-        let apiKey  = config.tmdbAPIKey
+struct DataFetcher{
+    
+    let tmdbBaseURL = APIConfig.shared?.tmdbBaseURL
+    let tmdbAPIKey = APIConfig.shared?.tmdbAPIKey
+    
+    
+    func fetchTitles(for media: String, by type: String) async throws -> [Title] {
         
         guard let fetchTitlesURL = URL(string: baseURL)?
             .appending(path: "3/trending/\(media)/day")
-            .appending(queryItems: [
-                URLQueryItem(name: "api_key", value: apiKey)
-            ]) else {
+            .appending(queryItems: [URLQueryItem(name: "api_key", value: apiKey)])else{
             throw NetworkError.urlBuildFailed
         }
         
-        print("Final URL:", fetchTitlesURL)
+        print(fetchTitlesURL)
         
-        let (data, urlResponse) = try await URLSession.shared.data(from: fetchTitlesURL)
+        let(data, urlResponce) = try await URLSession.shared.data(from: fetchTitlesURL)
         
-        guard let response = urlResponse as? HTTPURLResponse,
-              response.statusCode == 200 else {
-            throw NetworkError.badURLResponse(
-                underlyingError: NSError(
-                    domain: "DataFetcher",
-                    code: (urlResponse as? HTTPURLResponse)?.statusCode ?? -1,
-                    userInfo: [NSLocalizedDescriptionKey: "Invalid HTTP Response"]
-                )
-            )
+        guard let responce = urlResponce as? HTTPURLResponse, responce.statusCode == 200 else{
+            throw NetworkError.badURLResponse(underlyingError: NSError(domain: "DataFetcher",
+                                                                       code: (urlResponce as? HTTPURLResponse)? .statusCode ?? -1,
+                                                                       userInfo: [NSLocalizedDescriptionKey: "Invalid HTTP Responce"]))
         }
         
         let decoder = JSONDecoder()
         decoder.keyDecodingStrategy = .convertFromSnakeCase
-        
-        var titles = try decoder.decode(ApiObject.self, from: data).results
-        
+        var titles =  try decoder.decode(ApiObject.self, from: data).results
         Constants.addPosterPath(to: &titles)
-        
         return titles
+    }
+    private func buildURL(media: String,type: String) throws -> URL?{
+        guard let baseURL = tmdbBaseURL else{
+            throw NetworkError.missingConfig
+        }
+        guard let APIKey = tmdbAPIKey else{
+            throw NetworkError.missingConfig
+        }
+        var path: String
+        if type == 
     }
 }
