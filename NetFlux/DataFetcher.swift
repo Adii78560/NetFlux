@@ -14,11 +14,8 @@ struct DataFetcher{
     
     func fetchTitles(for media: String, by type: String) async throws -> [Title] {
         
-        guard let fetchTitlesURL = URL(string: baseURL)?
-            .appending(path: "3/trending/\(media)/day")
-            .appending(queryItems: [URLQueryItem(name: "api_key", value: apiKey)])else{
-            throw NetworkError.urlBuildFailed
-        }
+        let fetchTitlesURL = try buildURL(media: media, type: type)
+        
         
         print(fetchTitlesURL)
         
@@ -36,14 +33,32 @@ struct DataFetcher{
         Constants.addPosterPath(to: &titles)
         return titles
     }
-    private func buildURL(media: String,type: String) throws -> URL?{
-        guard let baseURL = tmdbBaseURL else{
+    
+    private func buildURL(media: String, type: String) throws -> URL {
+        guard let baseURL = tmdbBaseURL,
+              let apiKey = tmdbAPIKey else {
             throw NetworkError.missingConfig
         }
-        guard let APIKey = tmdbAPIKey else{
-            throw NetworkError.missingConfig
+
+        let path: String
+        switch type {
+        case "trending":
+            path = "3/trending/\(media)/day"
+        case "top_rated":
+            path = "3/\(media)/top_rated"
+        default:
+            throw NetworkError.urlBuildFailed
         }
-        var path: String
-        if type == 
+
+        guard let url = URL(string: baseURL)?
+            .appending(path: path)
+            .appending(queryItems: [URLQueryItem(name: "api_key", value: apiKey)]) else {
+            throw NetworkError.urlBuildFailed
+        }
+
+        print("Final URL:", url.absoluteString) // 👈 ALWAYS DO THIS
+
+        return url
     }
 }
+
